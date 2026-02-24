@@ -51,6 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idImage = $uploaded;
         }
     }
+
+    // رفع الصورة الشخصية
+    $personalPhoto = '';
+    if (!empty($_FILES['personal_photo']['name'])) {
+        $uploaded = uploadPersonImage($_FILES['personal_photo'], 'photo');
+        if ($uploaded === false) {
+            $errors[] = 'فشل رفع الصورة الشخصية.';
+        } else {
+            $personalPhoto = $uploaded;
+        }
+    }
     
     if (empty($errors)) {
         try {
@@ -59,10 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // إدراج الشخص
             dbExecute(
-                "INSERT INTO persons (category_id, full_name, id_type, id_number, phone, phone2, id_image,
+                "INSERT INTO persons (category_id, full_name, id_type, id_number, phone, phone2, id_image, personal_photo,
                     marital_status, children_total, children_male, children_female, job_title,
                     residence, residence_type, district, governorate, chronic_diseases, notes, created_by)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 [
                     (int)$old['category_id'],
                     $old['full_name'],
@@ -71,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $old['phone'],
                     $old['phone2'],
                     $idImage,
+                    $personalPhoto,
                     $old['marital_status'],
                     (int)$old['children_total'],
                     (int)$old['children_male'],
@@ -203,20 +215,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="tel" name="phone2" class="form-control"
                                    value="<?= clean($old['phone2'] ?? '') ?>" maxlength="50">
                         </div>
+                        <!-- صورة الشخص -->
+                        <div class="form-group">
+                            <label class="form-label">الصورة الشخصية</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" name="personal_photo" id="personal_photo" accept="image/*"
+                                       class="file-upload-input" onchange="previewImage(this, 'previewPhotoImg', 'photoPreviewWrap')">
+                                <label for="personal_photo" class="file-upload-label">
+                                    <span class="file-upload-icon">👤</span>
+                                    <span class="file-upload-text">اختر الصورة الشخصية</span>
+                                </label>
+                            </div>
+                            <div id="photoPreviewWrap" class="image-preview-wrap" style="display:none">
+                                <img id="previewPhotoImg" src="" alt="معاينة" class="image-preview" style="width:100px; height:100px; object-fit:cover;">
+                                <button type="button" class="btn btn-sm btn-danger mt-5" onclick="clearPreview('personal_photo', 'photoPreviewWrap')">✖ إزالة</button>
+                            </div>
+                        </div>
                         <!-- صورة الهوية -->
-                        <div class="form-group form-group--full">
+                        <div class="form-group">
                             <label class="form-label">صورة الهوية</label>
                             <div class="file-upload-wrapper">
                                 <input type="file" name="id_image" id="id_image" accept="image/*"
-                                       class="file-upload-input" onchange="previewImage(this)">
+                                       class="file-upload-input" onchange="previewImage(this, 'previewIdImg', 'idPreviewWrap')">
                                 <label for="id_image" class="file-upload-label">
                                     <span class="file-upload-icon">📷</span>
-                                    <span class="file-upload-text">اختر صورة الهوية (JPG, PNG, max 5MB)</span>
+                                    <span class="file-upload-text">اختر صورة الهوية</span>
                                 </label>
                             </div>
-                            <div id="imagePreview" class="image-preview-wrap" style="display:none">
-                                <img id="previewImg" src="" alt="معاينة الصورة" class="image-preview">
-                                <button type="button" class="btn btn-sm btn-danger mt-5" onclick="clearImage()">✖ إزالة الصورة</button>
+                            <div id="idPreviewWrap" class="image-preview-wrap" style="display:none">
+                                <img id="previewIdImg" src="" alt="معاينة" class="image-preview">
+                                <button type="button" class="btn btn-sm btn-danger mt-5" onclick="clearPreview('id_image', 'idPreviewWrap')">✖ إزالة</button>
                             </div>
                         </div>
                     </div>
@@ -384,19 +412,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 
 <script>
-function previewImage(input) {
+function previewImage(input, imgId, wrapId) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('previewImg').src = e.target.result;
-            document.getElementById('imagePreview').style.display = 'block';
+            document.getElementById(imgId).src = e.target.result;
+            document.getElementById(wrapId).style.display = 'block';
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
-function clearImage() {
-    document.getElementById('id_image').value = '';
-    document.getElementById('imagePreview').style.display = 'none';
+function clearPreview(inputId, wrapId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(wrapId).style.display = 'none';
 }
 </script>
 

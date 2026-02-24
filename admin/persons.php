@@ -7,12 +7,15 @@ require_once __DIR__ . '/../includes/header.php';
 
 // فلاتر البحث
 $filters = [
+    'q'              => get('q'),
     'name'           => get('name'),
     'category_id'    => get('category_id'),
     'id_number'      => get('id_number'),
     'phone'          => get('phone'),
     'governorate'    => get('governorate'),
     'marital_status' => get('marital_status'),
+    'residence_type' => get('residence_type'),
+    'job_title'      => get('job_title'),
 ];
 
 $page    = max(1, (int)get('page', '1'));
@@ -53,6 +56,15 @@ $baseUrl  = APP_URL . '/admin/persons.php' . ($queryStr ? '?' . $queryStr : '');
     </div>
     <div class="card-body" id="searchForm">
         <form method="GET" action="persons.php" class="search-form">
+            <div class="form-group mb-20">
+                <label class="form-label">🔍 بحث شامل (في جميع الحقول)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" name="q" class="form-control" style="flex: 1;" 
+                           value="<?= clean($filters['q']) ?>" placeholder="ابحث بالاسم، الرقم، الهاتف، العنوان، الوظيفة...">
+                    <button type="submit" class="btn btn-primary" style="padding: 0 30px;">🔍 ابحث الآن</button>
+                </div>
+            </div>
+
             <div class="form-grid form-grid--4">
                 <div class="form-group">
                     <label class="form-label">الاسم الكامل</label>
@@ -100,6 +112,19 @@ $baseUrl  = APP_URL . '/admin/persons.php' . ($queryStr ? '?' . $queryStr : '');
                         <option value="divorced" <?= ($filters['marital_status']==='divorced') ? 'selected' : '' ?>>مطلق/مطلقة</option>
                         <option value="widowed"  <?= ($filters['marital_status']==='widowed')  ? 'selected' : '' ?>>أرمل/أرملة</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نوع السكن</label>
+                    <select name="residence_type" class="form-control">
+                        <option value="">-- الكل --</option>
+                        <option value="owned"  <?= ($filters['residence_type'] === 'owned')  ? 'selected' : '' ?>>ملـك</option>
+                        <option value="rented" <?= ($filters['residence_type'] === 'rented') ? 'selected' : '' ?>>إيجار</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوظيفة / المسمى</label>
+                    <input type="text" name="job_title" class="form-control"
+                           value="<?= clean($filters['job_title']) ?>" placeholder="ابحث بالوظيفة...">
                 </div>
             </div>
             <div class="form-actions">

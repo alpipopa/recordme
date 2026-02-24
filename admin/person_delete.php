@@ -15,16 +15,11 @@ if (!$person) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     requireCsrf();
     
-    // حذف صورة الهوية من الخادم
-    if ($person['id_image'] && file_exists(UPLOAD_PATH . '/' . $person['id_image'])) {
-        @unlink(UPLOAD_PATH . '/' . $person['id_image']);
-    }
+    // التحديث لسلة المهملات بدلاً من الحذف النهائي
+    dbExecute("UPDATE persons SET deleted_at = NOW() WHERE id = ?", [$id]);
+    logAction('soft_delete', 'persons', $id, $person, ['deleted_at' => date('Y-m-d H:i:s')]);
     
-    // حذف الشخص (سيحذف custom_field_values تلقائياً بسبب CASCADE)
-    dbExecute("DELETE FROM persons WHERE id = ?", [$id]);
-    logAction('delete', 'persons', $id, $person, []);
-    
-    redirectWithMessage(APP_URL . '/admin/persons.php', 'success', 'تم حذف الشخص بنجاح.');
+    redirectWithMessage(APP_URL . '/admin/persons.php', 'success', 'تم نقل الشخص إلى سلة المهملات بنجاح.');
 }
 ?>
 

@@ -58,20 +58,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($uploaded === false) {
             $errors[] = 'فشل رفع صورة الهوية.';
         } else {
-            // حذف الصورة القديمة
-            if ($idImage && file_exists(UPLOAD_PATH . '/' . $idImage)) {
-                @unlink(UPLOAD_PATH . '/' . $idImage);
-            }
+            if ($idImage && file_exists(UPLOAD_PATH . '/' . $idImage)) @unlink(UPLOAD_PATH . '/' . $idImage);
             $idImage = $uploaded;
         }
     }
-    
-    // حذف الصورة إذا طُلب ذلك
-    if (isset($_POST['remove_image']) && $_POST['remove_image'] === '1') {
-        if ($idImage && file_exists(UPLOAD_PATH . '/' . $idImage)) {
-            @unlink(UPLOAD_PATH . '/' . $idImage);
-        }
+    if (isset($_POST['remove_id_image']) && $_POST['remove_id_image'] === '1') {
+        if ($idImage && file_exists(UPLOAD_PATH . '/' . $idImage)) @unlink(UPLOAD_PATH . '/' . $idImage);
         $idImage = '';
+    }
+
+    // رفع الصورة الشخصية
+    $personalPhoto = $person['personal_photo'];
+    if (!empty($_FILES['personal_photo']['name'])) {
+        $uploaded = uploadPersonImage($_FILES['personal_photo'], 'photo');
+        if ($uploaded === false) {
+            $errors[] = 'فشل رفع الصورة الشخصية.';
+        } else {
+            if ($personalPhoto && file_exists(UPLOAD_PATH . '/' . $personalPhoto)) @unlink(UPLOAD_PATH . '/' . $personalPhoto);
+            $personalPhoto = $uploaded;
+        }
+    }
+    if (isset($_POST['remove_personal_photo']) && $_POST['remove_personal_photo'] === '1') {
+        if ($personalPhoto && file_exists(UPLOAD_PATH . '/' . $personalPhoto)) @unlink(UPLOAD_PATH . '/' . $personalPhoto);
+        $personalPhoto = '';
     }
     
     if (empty($errors)) {
@@ -81,12 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             dbExecute(
                 "UPDATE persons SET category_id=?, full_name=?, id_type=?, id_number=?, phone=?, phone2=?,
-                    id_image=?, marital_status=?, children_total=?, children_male=?, children_female=?,
+                    id_image=?, personal_photo=?, marital_status=?, children_total=?, children_male=?, children_female=?,
                     job_title=?, residence=?, residence_type=?, district=?, governorate=?, chronic_diseases=?, notes=?, updated_by=?
                  WHERE id=?",
                 [
                     (int)$new['category_id'], $new['full_name'], $new['id_type'], $new['id_number'],
-                    $new['phone'], $new['phone2'], $idImage, $new['marital_status'],
+                    $new['phone'], $new['phone2'], $idImage, $personalPhoto, $new['marital_status'],
                     (int)$new['children_total'], (int)$new['children_male'], (int)$new['children_female'],
                     $new['job_title'], $new['residence'], $new['residence_type'], $new['district'], $new['governorate'],
                     $new['chronic_diseases'], $new['notes'], $_SESSION['user_id'] ?? null, $id,
@@ -193,28 +202,53 @@ $p = $person; // alias قصير
                         <label class="form-label">رقم هاتف إضافي</label>
                         <input type="tel" name="phone2" class="form-control" value="<?= clean($p['phone2']) ?>" maxlength="50">
                     </div>
-                    <!-- الصورة الحالية -->
-                    <div class="form-group form-group--full">
+                    <!-- الصورة الشخصية -->
+                    <div class="form-group">
+                        <label class="form-label">الصورة الشخصية</label>
+                        <?php if ($p['personal_photo']): ?>
+                        <div class="current-image-wrap" id="photoWrap">
+                            <img src="<?= UPLOAD_URL . '/' . clean($p['personal_photo']) ?>" alt="صورة" class="current-image" style="width:80px; height:80px; object-fit:cover;">
+                            <label class="checkbox-label mt-5">
+                                <input type="checkbox" name="remove_personal_photo" value="1">
+                                <span>حذف</span>
+                            </label>
+                        </div>
+                        <?php endif; ?>
+                        <div class="file-upload-wrapper mt-10">
+                            <input type="file" name="personal_photo" id="personal_photo" accept="image/*"
+                                   class="file-upload-input" onchange="previewImage(this, 'previewPhotoImg', 'photoPreview')">
+                            <label for="personal_photo" class="file-upload-label">
+                                <span class="file-upload-icon">👤</span>
+                                <span>تغيير الصورة الشخصية</span>
+                            </label>
+                        </div>
+                        <div id="photoPreview" class="image-preview-wrap" style="display:none">
+                            <img id="previewPhotoImg" src="" alt="معاينة" class="image-preview" style="width:80px; height:80px; object-fit:cover;">
+                        </div>
+                    </div>
+
+                    <!-- صورة الهوية -->
+                    <div class="form-group">
                         <label class="form-label">صورة الهوية</label>
                         <?php if ($p['id_image']): ?>
-                        <div class="current-image-wrap">
-                            <img src="<?= UPLOAD_URL . '/' . clean($p['id_image']) ?>" alt="صورة الهوية" class="current-image">
-                            <label class="checkbox-label mt-10">
-                                <input type="checkbox" name="remove_image" value="1">
-                                <span>حذف الصورة الحالية</span>
+                        <div class="current-image-wrap" id="idWrap">
+                            <img src="<?= UPLOAD_URL . '/' . clean($p['id_image']) ?>" alt="هوية" class="current-image">
+                            <label class="checkbox-label mt-5">
+                                <input type="checkbox" name="remove_id_image" value="1">
+                                <span>حذف</span>
                             </label>
                         </div>
                         <?php endif; ?>
                         <div class="file-upload-wrapper mt-10">
                             <input type="file" name="id_image" id="id_image" accept="image/*"
-                                   class="file-upload-input" onchange="previewImage(this)">
+                                   class="file-upload-input" onchange="previewImage(this, 'previewIdImg', 'idPreview')">
                             <label for="id_image" class="file-upload-label">
                                 <span class="file-upload-icon">📷</span>
-                                <span><?= $p['id_image'] ? 'تغيير الصورة' : 'اختر صورة' ?></span>
+                                <span>تغيير صورة الهوية</span>
                             </label>
                         </div>
-                        <div id="imagePreview" class="image-preview-wrap" style="display:none">
-                            <img id="previewImg" src="" alt="معاينة" class="image-preview">
+                        <div id="idPreview" class="image-preview-wrap" style="display:none">
+                            <img id="previewIdImg" src="" alt="معاينة" class="image-preview">
                         </div>
                     </div>
                 </div>
@@ -354,12 +388,12 @@ $p = $person; // alias قصير
 </form>
 
 <script>
-function previewImage(input) {
+function previewImage(input, imgId, wrapId) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = e => {
-            document.getElementById('previewImg').src = e.target.result;
-            document.getElementById('imagePreview').style.display = 'block';
+            document.getElementById(imgId).src = e.target.result;
+            document.getElementById(wrapId).style.display = 'block';
         };
         reader.readAsDataURL(input.files[0]);
     }

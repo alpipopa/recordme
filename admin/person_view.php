@@ -43,6 +43,7 @@ $documents = getPersonDocuments($id);
         <p class="page-subtitle">عرض البيانات الشخصية وإدارة المستندات المرفقة</p>
     </div>
     <div class="page-actions">
+        <a href="<?= APP_URL ?>/admin/person_id_card.php?id=<?= $id ?>" target="_blank" class="btn btn-info">🛡 بطاقة الهوية</a>
         <a href="<?= APP_URL ?>/admin/person_edit.php?id=<?= $id ?>" class="btn btn-warning">✏ تعديل البيانات</a>
         <a href="<?= APP_URL ?>/admin/persons.php" class="btn btn-secondary">🔙 العودة للقائمة</a>
     </div>
@@ -170,8 +171,21 @@ $documents = getPersonDocuments($id);
 
     </div>
 
-    <!-- الجانب الأيسر: صورة الهوية -->
+    <!-- الجانب الأيسر: الصور والوثائق -->
     <div class="card-column">
+        <!-- الصورة الشخصية -->
+        <div class="card mb-20">
+            <div class="card-header"><h3 class="card-title">👤 الصورة الشخصية</h3></div>
+            <div class="card-body text-center">
+                <?php if ($person['personal_photo'] && file_exists(UPLOAD_PATH . '/' . $person['personal_photo'])): ?>
+                    <img src="<?= UPLOAD_URL ?>/<?= clean($person['personal_photo']) ?>" alt="Photo" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--border); box-shadow: var(--shadow);">
+                <?php else: ?>
+                    <div style="width: 150px; height: 150px; background: var(--light); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 50px; color: var(--secondary);">👤</div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- صورة الهوية -->
         <div class="card">
             <div class="card-header"><h3 class="card-title">🆔 صورة الهوية الرئيسية</h3></div>
             <div class="card-body text-center">
@@ -183,7 +197,7 @@ $documents = getPersonDocuments($id);
                 <?php else: ?>
                     <div style="aspect-ratio: 3/2; background: var(--light); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--secondary);">
                         <span style="font-size: 40px; margin-bottom: 10px;">🖼</span>
-                        <span>لا توجد صورة متوفرة</span>
+                        <span>لا توجد صورة هوية</span>
                     </div>
                 <?php endif; ?>
             </div>

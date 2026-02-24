@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 24, 2026 at 08:11 PM
+-- Generation Time: Feb 24, 2026 at 11:23 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.28
 
@@ -49,7 +49,10 @@ INSERT INTO `audit_log` (`id`, `user_id`, `action`, `table_name`, `record_id`, `
 (2, 1, 'login', 'users', 1, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-24 22:33:00'),
 (3, 1, 'update', 'settings', NULL, '{\"logo_path\": \"\", \"site_name\": \"نظام تسجيل بيانات الأشخاص\", \"print_footer\": \"نظام تسجيل البيانات - سري\", \"print_header\": \"الجمهورية اليمنية\", \"site_subtitle\": \"لوحة التحكم الإدارية\", \"items_per_page\": \"25\"}', '[{\"id\": 1, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"site_name\", \"setting_value\": \"سجلني\"}, {\"id\": 2, \"updated_at\": \"2026-02-24 21:24:04\", \"setting_key\": \"site_subtitle\", \"setting_value\": \"لوحة التحكم الإدارية\"}, {\"id\": 3, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"print_header\", \"setting_value\": \"الجمهورية اليمنية                                                                                                                                                                                                                                                                                                          التاريخ:\"}, {\"id\": 4, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"print_footer\", \"setting_value\": \"نظام تسجيل البيانات\"}, {\"id\": 5, \"updated_at\": \"2026-02-24 21:24:04\", \"setting_key\": \"items_per_page\", \"setting_value\": \"25\"}, {\"id\": 6, \"updated_at\": \"2026-02-24 21:24:04\", \"setting_key\": \"logo_path\", \"setting_value\": \"\"}]', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-24 22:35:00'),
 (4, 1, 'update', 'settings', NULL, '{\"logo_path\": \"\", \"site_name\": \"سجلني\", \"print_footer\": \"نظام تسجيل البيانات\", \"print_header\": \"الجمهورية اليمنية                                                                                                                                                                                                                                                                                                          التاريخ:\", \"site_subtitle\": \"لوحة التحكم الإدارية\", \"items_per_page\": \"25\"}', '[{\"id\": 1, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"site_name\", \"setting_value\": \"سجلني\"}, {\"id\": 2, \"updated_at\": \"2026-02-24 21:24:04\", \"setting_key\": \"site_subtitle\", \"setting_value\": \"لوحة التحكم الإدارية\"}, {\"id\": 3, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"print_header\", \"setting_value\": \"الجمهورية اليمنية                                                                                                                                                                                                                                                                                                          التاريخ:\"}, {\"id\": 4, \"updated_at\": \"2026-02-24 22:35:00\", \"setting_key\": \"print_footer\", \"setting_value\": \"نظام تسجيل البيانات\"}, {\"id\": 5, \"updated_at\": \"2026-02-24 21:24:04\", \"setting_key\": \"items_per_page\", \"setting_value\": \"25\"}, {\"id\": 6, \"updated_at\": \"2026-02-24 22:39:06\", \"setting_key\": \"logo_path\", \"setting_value\": \"logo_1771961946.png\"}]', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-24 22:39:06'),
-(5, 1, 'update', 'users', 1, '{\"id\": 1, \"role\": \"admin\", \"email\": \"admin@admin.com\", \"avatar\": null, \"password\": \"$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi\", \"username\": \"admin\", \"full_name\": \"مدير النظام\", \"is_active\": 1, \"created_at\": \"2026-02-24 21:24:04\", \"last_login\": \"2026-02-24 22:33:00\"}', '{\"id\": 1, \"role\": \"admin\", \"email\": \"admin@admin.com\", \"avatar\": \"user_1_1771962843.png\", \"password\": \"$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi\", \"username\": \"admin\", \"full_name\": \"مدير النظام\", \"is_active\": 1, \"created_at\": \"2026-02-24 21:24:04\", \"last_login\": \"2026-02-24 22:33:00\"}', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-24 22:54:03');
+(5, 1, 'update', 'users', 1, '{\"id\": 1, \"role\": \"admin\", \"email\": \"admin@admin.com\", \"avatar\": null, \"password\": \"$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi\", \"username\": \"admin\", \"full_name\": \"مدير النظام\", \"is_active\": 1, \"created_at\": \"2026-02-24 21:24:04\", \"last_login\": \"2026-02-24 22:33:00\"}', '{\"id\": 1, \"role\": \"admin\", \"email\": \"admin@admin.com\", \"avatar\": \"user_1_1771962843.png\", \"password\": \"$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi\", \"username\": \"admin\", \"full_name\": \"مدير النظام\", \"is_active\": 1, \"created_at\": \"2026-02-24 21:24:04\", \"last_login\": \"2026-02-24 22:33:00\"}', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-24 22:54:03'),
+(6, 1, 'logout', 'users', 1, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-25 01:28:08'),
+(7, 1, 'login', 'users', 1, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-25 01:28:22'),
+(8, 1, 'login', 'users', 1, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-02-25 01:30:39');
 
 -- --------------------------------------------------------
 
@@ -75,6 +78,24 @@ INSERT INTO `categories` (`id`, `name`, `color`, `sort_order`, `created_at`) VAL
 (3, 'موظف', '#6f42c1', 3, '2026-02-24 21:24:04'),
 (4, 'مورد', '#fd7e14', 4, '2026-02-24 21:24:04'),
 (5, 'أخرى', '#6c757d', 5, '2026-02-24 21:24:04');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
+
+CREATE TABLE `countries` (
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`id`, `name`) VALUES
+(1, 'اليمن');
 
 -- --------------------------------------------------------
 
@@ -111,11 +132,24 @@ CREATE TABLE `custom_field_values` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `districts`
+--
+
+CREATE TABLE `districts` (
+  `id` int UNSIGNED NOT NULL,
+  `governorate_id` int UNSIGNED NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `governorates`
 --
 
 CREATE TABLE `governorates` (
   `id` int UNSIGNED NOT NULL,
+  `country_id` int UNSIGNED DEFAULT '1',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -123,30 +157,30 @@ CREATE TABLE `governorates` (
 -- Dumping data for table `governorates`
 --
 
-INSERT INTO `governorates` (`id`, `name`) VALUES
-(1, 'أمانة العاصمة'),
-(2, 'صنعاء'),
-(3, 'عدن'),
-(4, 'تعز'),
-(5, 'الحديدة'),
-(6, 'إب'),
-(7, 'ذمار'),
-(8, 'حضرموت'),
-(9, 'مأرب'),
-(10, 'البيضاء'),
-(11, 'شبوة'),
-(12, 'أبين'),
-(13, 'لحج'),
-(14, 'الضالع'),
-(15, 'ريمة'),
-(16, 'المحويت'),
-(17, 'صعدة'),
-(18, 'حجة'),
-(19, 'عمران'),
-(20, 'الجوف'),
-(21, 'المهرة'),
-(22, 'سقطرى'),
-(23, 'حضرموت الوادي');
+INSERT INTO `governorates` (`id`, `country_id`, `name`) VALUES
+(1, 1, 'أمانة العاصمة'),
+(2, 1, 'صنعاء'),
+(3, 1, 'عدن'),
+(4, 1, 'تعز'),
+(5, 1, 'الحديدة'),
+(6, 1, 'إب'),
+(7, 1, 'ذمار'),
+(8, 1, 'حضرموت'),
+(9, 1, 'مأرب'),
+(10, 1, 'البيضاء'),
+(11, 1, 'شبوة'),
+(12, 1, 'أبين'),
+(13, 1, 'لحج'),
+(14, 1, 'الضالع'),
+(15, 1, 'ريمة'),
+(16, 1, 'المحويت'),
+(17, 1, 'صعدة'),
+(18, 1, 'حجة'),
+(19, 1, 'عمران'),
+(20, 1, 'الجوف'),
+(21, 1, 'المهرة'),
+(22, 1, 'سقطرى'),
+(23, 1, 'حضرموت الوادي');
 
 -- --------------------------------------------------------
 
@@ -180,6 +214,7 @@ CREATE TABLE `persons` (
   `phone` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `phone2` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `id_image` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `personal_photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `marital_status` enum('single','married','divorced','widowed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'single',
   `children_total` int NOT NULL DEFAULT '0',
   `children_male` int NOT NULL DEFAULT '0',
@@ -194,7 +229,8 @@ CREATE TABLE `persons` (
   `created_by` int UNSIGNED DEFAULT NULL,
   `updated_by` int UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='جدول بيانات الأشخاص';
 
 -- --------------------------------------------------------
@@ -290,7 +326,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `full_name`, `email`, `avatar`, `role`, `is_active`, `last_login`, `created_at`) VALUES
-(1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'admin@admin.com', 'user_1_1771962843.png', 'admin', 1, '2026-02-24 22:33:00', '2026-02-24 21:24:04');
+(1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'مدير النظام', 'admin@admin.com', 'user_1_1771962843.png', 'admin', 1, '2026-02-25 01:30:39', '2026-02-24 21:24:04');
 
 --
 -- Indexes for dumped tables
@@ -314,6 +350,12 @@ ALTER TABLE `categories`
   ADD KEY `idx_sort` (`sort_order`);
 
 --
+-- Indexes for table `countries`
+--
+ALTER TABLE `countries`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `custom_fields`
 --
 ALTER TABLE `custom_fields`
@@ -330,6 +372,13 @@ ALTER TABLE `custom_field_values`
   ADD UNIQUE KEY `unique_person_field` (`person_id`,`field_id`),
   ADD KEY `idx_person` (`person_id`),
   ADD KEY `idx_field` (`field_id`);
+
+--
+-- Indexes for table `districts`
+--
+ALTER TABLE `districts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_gov` (`governorate_id`);
 
 --
 -- Indexes for table `governorates`
@@ -395,13 +444,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_log`
 --
 ALTER TABLE `audit_log`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `countries`
+--
+ALTER TABLE `countries`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `custom_fields`
@@ -413,6 +468,12 @@ ALTER TABLE `custom_fields`
 -- AUTO_INCREMENT for table `custom_field_values`
 --
 ALTER TABLE `custom_field_values`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `districts`
+--
+ALTER TABLE `districts`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --

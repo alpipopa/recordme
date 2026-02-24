@@ -11,4 +11,4 @@ if (isLoggedIn()) {
     logout();
 }
 
-redirect(APP_URL . '/login.php');
+redirect(APP_URL . '/index.php');

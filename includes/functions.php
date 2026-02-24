@@ -111,9 +111,25 @@ function dbLastId(): string {
  * الحصول على جميع الأشخاص مع فلاتر البحث
  */
 function getPersons(array $filters = [], int $page = 1, int $perPage = 25): array {
-    $where  = ['1=1'];
+    $where  = [];
+    
+    // سلة المهملات
+    if (!empty($filters['only_deleted'])) {
+        $where[] = 'p.deleted_at IS NOT NULL';
+    } else {
+        $where[] = 'p.deleted_at IS NULL';
+    }
+    
     $params = [];
     
+    // البحث الشامل (Global Search)
+    if (!empty($filters['q'])) {
+        $q = '%' . $filters['q'] . '%';
+        $where[]  = "(p.full_name LIKE ? OR p.id_number LIKE ? OR p.phone LIKE ? OR p.phone2 LIKE ? 
+                      OR p.residence LIKE ? OR p.district LIKE ? OR p.job_title LIKE ? OR p.notes LIKE ?)";
+        for ($i=0; $i<8; $i++) $params[] = $q;
+    }
+
     if (!empty($filters['name'])) {
         $where[]  = 'p.full_name LIKE ?';
         $params[] = '%' . $filters['name'] . '%';
@@ -138,6 +154,14 @@ function getPersons(array $filters = [], int $page = 1, int $perPage = 25): arra
     if (!empty($filters['marital_status'])) {
         $where[]  = 'p.marital_status = ?';
         $params[] = $filters['marital_status'];
+    }
+    if (!empty($filters['residence_type'])) {
+        $where[]  = 'p.residence_type = ?';
+        $params[] = $filters['residence_type'];
+    }
+    if (!empty($filters['job_title'])) {
+        $where[]  = 'p.job_title LIKE ?';
+        $params[] = '%' . $filters['job_title'] . '%';
     }
     
     $whereStr = implode(' AND ', $where);
@@ -224,9 +248,9 @@ function getCustomFields(bool $activeOnly = true): array {
 // ==========================================
 
 /**
- * رفع صورة هوية الشخص
+ * رفع صور الأشخاص (هوية أو شخصية)
  */
-function uploadIdImage(array $file): string|false {
+function uploadPersonImage(array $file, string $prefix = 'img'): string|false {
     if ($file['error'] !== UPLOAD_ERR_OK) return false;
     if ($file['size'] > MAX_FILE_SIZE) return false;
     
@@ -244,7 +268,7 @@ function uploadIdImage(array $file): string|false {
         default      => 'jpg'
     };
     
-    $filename = 'id_' . uniqid('', true) . '.' . $ext;
+    $filename = $prefix . '_' . uniqid('', true) . '.' . $ext;
     $destPath = UPLOAD_PATH . '/' . $filename;
     
     if (!is_dir(UPLOAD_PATH)) {
@@ -254,6 +278,13 @@ function uploadIdImage(array $file): string|false {
     if (!move_uploaded_file($file['tmp_name'], $destPath)) return false;
     
     return $filename;
+}
+
+/**
+ * رفع صورة هوية الشخص (ابقاء للتوافق)
+ */
+function uploadIdImage(array $file): string|false {
+    return uploadPersonImage($file, 'id');
 }
 
 /**
@@ -319,53 +350,57 @@ function deleteDocument(int $docId): bool {
 function getDashboardStats(): array {
     $stats = [];
     
-    // إجمالي الأشخاص
-    $stats['total_persons'] = (int)(dbQueryOne("SELECT COUNT(*) as c FROM persons")['c'] ?? 0);
+    // إجمالي الأشخاص (نشطين)
+    $stats['total_persons'] = (int)(dbQueryOne("SELECT COUNT(*) as c FROM persons WHERE deleted_at IS NULL")['c'] ?? 0);
     
-    // تصنيف مفصل
+    // سلة المهملات
+    $stats['trash_count'] = (int)(dbQueryOne("SELECT COUNT(*) as c FROM persons WHERE deleted_at IS NOT NULL")['c'] ?? 0);
+    
+    // تصنيف مفصل (نشطين)
     $rows = dbQuery(
         "SELECT c.name, COUNT(p.id) as cnt, c.color
          FROM categories c
-         LEFT JOIN persons p ON p.category_id = c.id
+         LEFT JOIN persons p ON p.category_id = c.id AND p.deleted_at IS NULL
          GROUP BY c.id, c.name, c.color
          ORDER BY c.sort_order"
     );
     $stats['by_category'] = $rows;
     
-    // إحصاء الأشخاص المسجلين اليوم
+    // إحصاء الأشخاص المسجلين اليوم (نشطين)
     $stats['today_persons'] = (int)(dbQueryOne(
-        "SELECT COUNT(*) as c FROM persons WHERE DATE(created_at) = CURDATE()"
+        "SELECT COUNT(*) as c FROM persons WHERE DATE(created_at) = CURDATE() AND deleted_at IS NULL"
     )['c'] ?? 0);
     
-    // إحصاء هذا الشهر
+    // إحصاء هذا الشهر (نشطين)
     $stats['month_persons'] = (int)(dbQueryOne(
-        "SELECT COUNT(*) as c FROM persons WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())"
+        "SELECT COUNT(*) as c FROM persons WHERE MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW()) AND deleted_at IS NULL"
     )['c'] ?? 0);
     
-    // توزيع الحالة الاجتماعية
+    // توزيع الحالة الاجتماعية (نشطين)
     $stats['marital'] = dbQuery(
-        "SELECT marital_status, COUNT(*) as cnt FROM persons GROUP BY marital_status"
+        "SELECT marital_status, COUNT(*) as cnt FROM persons WHERE deleted_at IS NULL GROUP BY marital_status"
     );
     
-    // إجمالي المحافظات
+    // إجمالي المحافظات (نشطين)
     $stats['by_governorate'] = dbQuery(
-        "SELECT governorate, COUNT(*) as cnt FROM persons WHERE governorate != '' GROUP BY governorate ORDER BY cnt DESC LIMIT 10"
+        "SELECT governorate, COUNT(*) as cnt FROM persons WHERE governorate != '' AND deleted_at IS NULL GROUP BY governorate ORDER BY cnt DESC LIMIT 10"
     );
     
-    // آخر 5 مسجلين
+    // آخر 5 مسجلين (نشطين)
     $stats['latest'] = dbQuery(
-        "SELECT p.full_name, p.created_at, c.name as category_name
+        "SELECT p.id, p.full_name, p.created_at, c.name as category_name
          FROM persons p LEFT JOIN categories c ON c.id = p.category_id
+         WHERE p.deleted_at IS NULL
          ORDER BY p.created_at DESC LIMIT 5"
     );
 
-    // إحصائيات التسجيل الشهري لآخر 12 شهر
+    // إحصائيات التسجيل الشهري لآخر 12 شهر (نشطين)
     $stats['monthly_growth'] = dbQuery(
         "SELECT 
             DATE_FORMAT(created_at, '%Y-%m') as month,
             COUNT(*) as cnt
          FROM persons 
-         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH) AND deleted_at IS NULL
          GROUP BY month
          ORDER BY month ASC"
     );

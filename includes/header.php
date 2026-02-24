@@ -55,6 +55,11 @@ $user = currentUser();
             </a>
         </div>
         <div class="topbar-actions">
+            <a href="<?= APP_URL ?>/index.php" class="view-site-link" title="عرض الموقع" style="margin-left: 15px;">🌍</a>
+            
+            <!-- تبديل الوضع الليلي -->
+            <button id="darkToggle" class="dark-toggle" title="تبديل الوضع الليلي">🌙</button>
+            
             <!-- التنبيهات -->
             <div class="notif-menu" id="notifMenuToggle">
                 <div class="notif-icon-wrap">
@@ -87,6 +92,7 @@ $user = currentUser();
                     <span class="user-role"><?= clean($user['role'] ?? '') ?></span>
                 </div>
                 <div class="user-dropdown" id="userDropdown">
+                    <a href="<?= APP_URL ?>/index.php" class="dropdown-item">🏠 عرض الموقع</a>
                     <a href="<?= APP_URL ?>/admin/profile.php" class="dropdown-item">👤 الملف الشخصي</a>
                     <a href="<?= APP_URL ?>/admin/users.php" class="dropdown-item">⚙ إدارة المستخدمين</a>
                     <div class="dropdown-divider"></div>
@@ -127,7 +133,30 @@ $user = currentUser();
             <span class="nav-icon">🖼</span>
             <span class="nav-label">إدارة السلايدر</span>
         </a>
+        <a href="<?= APP_URL ?>/admin/trash.php" class="nav-item <?= (basename($_SERVER['PHP_SELF']) === 'trash.php') ? 'active' : '' ?>">
+            <span class="nav-icon">🗑</span>
+            <span class="nav-label">سلة المهملات</span>
+            <?php 
+            $trashCnt = dbQueryOne("SELECT COUNT(*) as cnt FROM persons WHERE deleted_at IS NOT NULL")['cnt'];
+            if ($trashCnt > 0): ?>
+                <span class="badge badge-danger" style="margin-right:auto; font-size:10px; padding:2px 6px;"><?= $trashCnt ?></span>
+            <?php endif; ?>
+        </a>
         
+        <div class="nav-section-title">إدارة البيانات الجغرافية</div>
+        <a href="<?= APP_URL ?>/admin/countries.php" class="nav-item <?= (basename($_SERVER['PHP_SELF']) === 'countries.php') ? 'active' : '' ?>">
+            <span class="nav-icon">🌍</span>
+            <span class="nav-label">إدارة الدول</span>
+        </a>
+        <a href="<?= APP_URL ?>/admin/governorates.php" class="nav-item <?= (basename($_SERVER['PHP_SELF']) === 'governorates.php') ? 'active' : '' ?>">
+            <span class="nav-icon">🏙</span>
+            <span class="nav-label">إدارة المحافظات</span>
+        </a>
+        <a href="<?= APP_URL ?>/admin/districts.php" class="nav-item <?= (basename($_SERVER['PHP_SELF']) === 'districts.php') ? 'active' : '' ?>">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">إدارة الأحياء والمديريات</span>
+        </a>
+
         <div class="nav-section-title">التقارير والتصدير</div>
         <a href="<?= APP_URL ?>/admin/print_report.php" class="nav-item <?= (basename($_SERVER['PHP_SELF']) === 'print_report.php') ? 'active' : '' ?>">
             <span class="nav-icon">🖨</span>

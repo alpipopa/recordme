@@ -11,10 +11,13 @@ $doExport = isset($_GET['export']) && $_GET['export'] === '1';
 
 // فلاتر
 $filters = [
+    'q'              => get('q'),
     'name'           => get('name'),
     'category_id'    => get('category_id'),
     'governorate'    => get('governorate'),
     'marital_status' => get('marital_status'),
+    'residence_type' => get('residence_type'),
+    'job_title'      => get('job_title'),
 ];
 
 if ($doExport) {
@@ -42,7 +45,7 @@ if ($doExport) {
         'م', 'الاسم الكامل', 'التصنيف', 'نوع الهوية', 'رقم الهوية',
         'الهاتف الرئيسي', 'هاتف إضافي', 'الحالة الاجتماعية',
         'إجمالي الأطفال', 'ذكور', 'إناث', 'المسمى الوظيفي',
-        'عنوان السكن', 'الحي', 'المحافظة', 'الأمراض المزمنة',
+        'عنوان السكن', 'نوع السكن', 'الحي', 'المحافظة', 'الأمراض المزمنة',
         'ملاحظات', 'تاريخ التسجيل',
     ]);
     
@@ -61,6 +64,7 @@ if ($doExport) {
             $p['children_female'],
             $p['job_title'],
             $p['residence'],
+            getResidenceTypeLabel($p['residence_type']),
             $p['district'],
             $p['governorate'],
             $p['chronic_diseases'],
@@ -97,9 +101,27 @@ $totalRecords  = $previewResult['total'];
     <div class="card-body">
         <form method="GET" action="export_csv.php" id="exportForm">
             <div class="form-grid form-grid--2">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label class="form-label">🔍 بحث شامل</label>
+                    <input type="text" name="q" class="form-control" value="<?= clean($filters['q']) ?>" placeholder="ابحث في جميع الحقول...">
+                </div>
+
                 <div class="form-group">
                     <label class="form-label">الاسم</label>
                     <input type="text" name="name" class="form-control" value="<?= clean($filters['name']) ?>">
+                </div>
+                <!-- ... rest of the fields -->
+                <div class="form-group">
+                    <label class="form-label">المسمى الوظيفي</label>
+                    <input type="text" name="job_title" class="form-control" value="<?= clean($filters['job_title']) ?>">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">نوع السكن</label>
+                    <select name="residence_type" class="form-control">
+                        <option value="">-- الكل --</option>
+                        <option value="owned" <?= ($filters['residence_type']==='owned')?'selected':'' ?>>ملـك</option>
+                        <option value="rented" <?= ($filters['residence_type']==='rented')?'selected':'' ?>>إيجار</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label">التصنيف</label>

@@ -130,94 +130,127 @@ $pageTitle = 'لوحة التحكم';
 
 <!-- JavaScript للرسوم البيانية -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    Chart.defaults.font.family = "'Almarai', sans-serif";
-    Chart.defaults.color = '#718096';
+    // إعدادات الوضع المظلم للرسوم البيانية
+    function getChartOptions(isDark) {
+        const textColor = isDark ? '#cbd5e1' : '#718096';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+        
+        return {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { color: textColor }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor },
+                    beginAtZero: true
+                }
+            }
+        };
+    }
 
-    // 1. رسم بياني للنمو الشهري
-    const ctxGrowth = document.getElementById('growthChart').getContext('2d');
-    new Chart(ctxGrowth, {
+    let isDark = document.body.classList.contains('dark-mode');
+    Chart.defaults.font.family = "'Almarai', sans-serif";
+    
+    // 1. نمو الحالات
+    const growthChart = new Chart(document.getElementById('growthChart'), {
         type: 'line',
         data: {
             labels: <?= json_encode(array_column($stats['monthly_growth'], 'month')) ?>,
             datasets: [{
                 label: 'عدد المسجلين',
                 data: <?= json_encode(array_column($stats['monthly_growth'], 'cnt')) ?>,
-                borderColor: '#2c5282',
-                backgroundColor: 'rgba(44, 82, 130, 0.1)',
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 fill: true,
                 tension: 0.4,
-                borderWidth: 3,
-                pointBackgroundColor: '#fff',
-                pointBorderColor: '#2c5282',
-                pointRadius: 4
+                borderWidth: 3
             }]
         },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-        }
+        options: getChartOptions(isDark)
     });
 
     // 2. توزيع التصنيفات
-    const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-    new Chart(ctxCategory, {
+    const categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'doughnut',
         data: {
             labels: <?= json_encode(array_column($stats['by_category'], 'name')) ?>,
             datasets: [{
                 data: <?= json_encode(array_column($stats['by_category'], 'cnt')) ?>,
                 backgroundColor: <?= json_encode(array_column($stats['by_category'], 'color')) ?>,
-                borderWidth: 0
+                borderWidth: 2,
+                borderColor: isDark ? '#1e293b' : '#fff'
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom' } },
+            plugins: { legend: { position: 'bottom', labels: { color: isDark ? '#cbd5e1' : '#718096' } } },
             cutout: '70%'
         }
     });
 
     // 3. الحالة الاجتماعية
-    const ctxMarital = document.getElementById('maritalChart').getContext('2d');
-    new Chart(ctxMarital, {
+    const maritalChart = new Chart(document.getElementById('maritalChart'), {
         type: 'pie',
         data: {
             labels: [<?php foreach($stats['marital'] as $m) echo "'" . ($maritalLabels[$m['marital_status']] ?? $m['marital_status']) . "',"; ?>],
             datasets: [{
                 data: <?= json_encode(array_column($stats['marital'], 'cnt')) ?>,
-                backgroundColor: ['#48bb78', '#4299e1', '#ed8936', '#f56565'],
+                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
                 borderWidth: 2,
-                borderColor: '#fff'
+                borderColor: isDark ? '#1e293b' : '#fff'
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom' } }
+            plugins: { legend: { position: 'bottom', labels: { color: isDark ? '#cbd5e1' : '#718096' } } }
         }
     });
 
     // 4. توزيع المحافظات
-    const ctxGov = document.getElementById('govChart').getContext('2d');
-    new Chart(ctxGov, {
+    const govChart = new Chart(document.getElementById('govChart'), {
         type: 'bar',
         data: {
             labels: <?= json_encode(array_column($stats['by_governorate'], 'governorate')) ?>,
             datasets: [{
                 label: 'عدد الحالات',
                 data: <?= json_encode(array_column($stats['by_governorate'], 'cnt')) ?>,
-                backgroundColor: '#2b6cb0',
+                backgroundColor: '#3b82f6',
                 borderRadius: 5
             }]
         },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-        }
+        options: getChartOptions(isDark)
     });
-});
+
+    // مستمع لتغيير الوضع لتحديث الرسوم البيانية
+    document.getElementById('darkToggle')?.addEventListener('click', () => {
+        setTimeout(() => {
+            const newIsDark = document.body.classList.contains('dark-mode');
+            const newOpts = getChartOptions(newIsDark);
+            
+            [growthChart, govChart].forEach(chart => {
+                chart.options.scales.x.ticks.color = newOpts.scales.x.ticks.color;
+                chart.options.scales.y.ticks.color = newOpts.scales.y.ticks.color;
+                chart.options.scales.x.grid.color = newOpts.scales.x.grid.color;
+                chart.options.scales.y.grid.color = newOpts.scales.y.grid.color;
+                chart.options.plugins.legend.labels.color = newOpts.plugins.legend.labels.color;
+                chart.update();
+            });
+
+            [categoryChart, maritalChart].forEach(chart => {
+                chart.options.plugins.legend.labels.color = newIsDark ? '#cbd5e1' : '#718096';
+                chart.data.datasets[0].borderColor = newIsDark ? '#1e293b' : '#fff';
+                chart.update();
+            });
+        }, 100);
+    });
 </script>
 
 <!-- روابط سريعة -->
